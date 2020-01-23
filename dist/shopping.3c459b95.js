@@ -128,21 +128,76 @@ function handlerSubmit(e) {
   var name = e.currentTarget.item.value;
   var item = {
     name: name,
-    id: Date.now,
+    id: Date.now(),
     complete: false
   }; // Push item to the state
 
-  items.push(item); // Clear the form 
+  items.push(item); // Clear the form
 
-  e.target.reset();
-}
+  e.target.reset(); // Fire off a custom event
+
+  list.dispatchEvent(new CustomEvent('itemsUpdated'));
+} // Display the items
+
 
 function displayItems() {
-  var html = items.map;
+  var html = items.map(function (item) {
+    return "<li class = \"shopping-item\">\n      <input value=\"".concat(item.id, "\" type=\"checkbox\" \n      ").concat(item.complete ? 'checked' : '', ">\n      <span class=\"itemName\"> ").concat(item.name, " </span>\n      <button value=\"").concat(item.id, "\"> &times </button>\n      </li>");
+  }).join('');
+  list.innerHTML = html;
+} // Add the items to LS
+
+
+function mirrorToLocalStorage() {
+  localStorage.setItem('items', JSON.stringify(items));
+} // Take the items from LS
+
+
+function restoreFromLocalStorage() {
+  var lsItems = JSON.parse(localStorage.getItem('items'));
+
+  if (lsItems.length) {
+    lsItems.forEach(function (item) {
+      return items.push(item);
+    });
+    list.dispatchEvent(new CustomEvent('itemsUpdated'));
+  }
+} // Delete items from the list
+
+
+function deleteItem(id) {
+  items = items.filter(function (item) {
+    return item.id !== id;
+  });
+  list.dispatchEvent(new CustomEvent('itemsUpdated'));
+} // Mark as complete the selected item
+
+
+function markAsComplete(id) {
+  var itemRef = items.find(function (item) {
+    return item.id === id;
+  });
+  itemRef.complete = !itemRef.complete;
+  list.dispatchEvent(new CustomEvent('itemsUpdated'));
 }
 
-shoppingForm.addEventListener('submit', handlerSubmit); // 15:30
-},{}],"../../../Users/Diego/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+shoppingForm.addEventListener('submit', handlerSubmit);
+list.addEventListener('itemsUpdated', displayItems);
+list.addEventListener('itemsUpdated', mirrorToLocalStorage); // Event delegation from the list to the button and the input
+
+list.addEventListener('click', function (e) {
+  var id = parseInt(e.target.value);
+
+  if (e.target.matches('button')) {
+    deleteItem(id);
+  }
+
+  if (e.target.matches('input[type="checkbox"]')) {
+    markAsComplete(id);
+  }
+});
+restoreFromLocalStorage(); // 38.30
+},{}],"../../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -170,7 +225,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58488" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62463" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -346,5 +401,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../../../Users/Diego/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","shopping.js"], null)
+},{}]},{},["../../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","shopping.js"], null)
 //# sourceMappingURL=/shopping.3c459b95.js.map
