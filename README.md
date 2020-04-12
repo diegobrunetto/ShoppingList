@@ -1,3 +1,6 @@
 # Shopping List
 
-## With custom events, delegation and localstorage
+In this project I want to practice custom events, delegation and localstorage.
+
+
+![Screenshot](screenshot.png)
