@@ -32,7 +32,7 @@ function displayItems() {
       item =>
         `<li class = "shopping-item">
       <input value="${item.id}" type="checkbox" 
-      ${item.complete ? 'checked' : ''}>
+      ${item.complete ? 'checked' : ''} class="check">
       <span class="itemName"> ${item.name} </span>
       <button value="${item.id}"> &times </button>
       </li>`
